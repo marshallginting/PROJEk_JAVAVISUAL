@@ -2,7 +2,7 @@ package com.unpri.charactermanager.model;
 
 import java.util.Objects;
 
-public final class Character {
+public class Character {
     private String name;
     private CharacterType type;
     private int level;
@@ -28,22 +28,22 @@ public final class Character {
 
     private void calculateStats() {
         switch (this.type) {
-            case WARRIOR -> {
+            case WARRIOR:
                 this.hitPoints = 100 + (this.level - 1) * 20;
                 this.attack = 15 + (this.level - 1) * 5;
-            }
-            case MAGE -> {
+                break;
+            case MAGE:
                 this.hitPoints = 70 + (this.level - 1) * 10;
                 this.attack = 25 + (this.level - 1) * 8;
-            }
-            case ARCHER -> {
+                break;
+            case ARCHER:
                 this.hitPoints = 85 + (this.level - 1) * 15;
                 this.attack = 20 + (this.level - 1) * 6;
-            }
-            case ROGUE -> {
+                break;
+            case ROGUE:
                 this.hitPoints = 80 + (this.level - 1) * 12;
                 this.attack = 22 + (this.level - 1) * 7;
-            }
+                break;
         }
     }
 
