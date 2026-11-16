@@ -1,5 +1,4 @@
 package com.unpri.charactermanager.model;
-
 import java.util.ArrayList;
 import java.util.List;
 
