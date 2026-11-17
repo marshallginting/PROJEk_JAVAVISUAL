@@ -1,85 +1,67 @@
 package com.unpri.charactermanager.view;
 
 import com.unpri.charactermanager.model.Character;
-import com.unpri.charactermanager.model.CharacterManager;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
 
 public class MainWindow extends JFrame {
-    private CharacterManager characterManager;
-    private JPanel characterPanel;
-    private JLabel avgLevelLabel;
+    public static final int MIN_LEVEL_GOLD = 5;
 
-    public MainWindow(CharacterManager manager) {
-        this.characterManager = manager;
-
-        // Pengaturan Dasar Jendela (JFrame)
-        setTitle("Aplikasi Character Manager - TP8");
-        setSize(500, 450);
+    public MainWindow(List<Character> characters) {
+        setTitle("Character Manager v0.4 - TP10");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        getContentPane().setBackground(AppTheme.COLOR_BACKGROUND);
 
-        // Judul di bagian atas
-        JLabel titleLabel = new JLabel("Daftar Karakter Game", JLabel.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        add(titleLabel, BorderLayout.NORTH);
-
-        // Panel untuk menampung daftar karakter (menggunakan JScrollPane)
-        characterPanel = new JPanel();
-        characterPanel.setLayout(new BoxLayout(characterPanel, BoxLayout.Y_AXIS));
-        JScrollPane scrollPane = new JScrollPane(characterPanel);
-        add(scrollPane, BorderLayout.CENTER);
-
-        // Panel bawah untuk statistik rata-rata level
-        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        avgLevelLabel = new JLabel();
-        southPanel.add(avgLevelLabel);
-        add(southPanel, BorderLayout.SOUTH);
-
-        // Memuat data pertama kali saat jendela dibuka
-        refreshData();
-    }
-
-    // Method untuk menampilkan seluruh data karakter secara dinamis dan lengkap
-    public void refreshData() {
-        characterPanel.removeAll(); // Bersihkan panel sebelum isi ulang
-
-        List<Character> characters = characterManager.getAllCharacters();
-        double totalLevel = 0;
+        JPanel cardPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        cardPanel.setBackground(AppTheme.COLOR_BACKGROUND);
+        cardPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         for (Character c : characters) {
-            JPanel card = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEtchedBorder(),
-                BorderFactory.createEmptyBorder(5, 10, 5, 10)
-            ));
-            
-            // Format teks untuk menampilkan semua atribut karakter dengan rapi
-            String infoTeks = String.format(
-                "<html><b>%s</b> | Tipe: %s | Level: %d | HP: %d | Atk: %d | Mana: %d</html>",
-                c.getName(),
-                c.getType(),
-                c.getLevel(),
-                c.getHitPoints(),
-                c.getAttack(),
-                c.getMana()
-            );
+            JPanel card = new JPanel();
+            card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+            card.setOpaque(true);
+            card.setBackground(AppTheme.colorFor(c.getType().name()));
+            card.setBorder(AppTheme.BORDER_CARD);
 
-            JLabel infoLabel = new JLabel(infoTeks);
-            card.add(infoLabel);
-            
-            characterPanel.add(card);
-            totalLevel += c.getLevel();
+            // Properti Tambahan 1: Tooltip detail
+            card.setToolTipText("HP: " + c.getHitPoints() + " | Attack: " + c.getAttack() + " | Mana: " + c.getMana());
+
+            // Properti Tambahan 2: setEnabled untuk level 1
+            if (c.getLevel() == 1) {
+                card.setEnabled(false);
+            }
+
+            JLabel nameLabel = new JLabel("Name: " + c.getName());
+            JLabel typeLabel = new JLabel("Type: " + c.getType());
+            JLabel levelLabel = new JLabel("Level: " + c.getLevel());
+
+            nameLabel.setFont(AppTheme.FONT_TITLE);
+            typeLabel.setFont(AppTheme.FONT_REGULAR);
+            levelLabel.setFont(AppTheme.FONT_REGULAR);
+
+            // Mini-Challenge: Level >= 5 teks emas & tebal
+            if (c.getLevel() >= MIN_LEVEL_GOLD) {
+                levelLabel.setForeground(AppTheme.COLOR_GOLD);
+                levelLabel.setFont(AppTheme.FONT_BOLD);
+            } else {
+                levelLabel.setForeground(Color.WHITE);
+            }
+            nameLabel.setForeground(Color.WHITE);
+            typeLabel.setForeground(Color.WHITE);
+
+            card.add(nameLabel);
+            card.add(typeLabel);
+            card.add(levelLabel);
+
+            cardPanel.add(card);
         }
 
-        // Statistik Rata-rata Level
-        double avgLevel = characters.isEmpty() ? 0 : totalLevel / characters.size();
-        avgLevelLabel.setText("Rata-rata Level: " + String.format("%.2f", avgLevel));
-
-        // Refresh tampilan UI agar komponen ter-update secara real-time
-        characterPanel.revalidate();
-        characterPanel.repaint();
+        add(new JScrollPane(cardPanel), BorderLayout.CENTER);
+        
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 }
