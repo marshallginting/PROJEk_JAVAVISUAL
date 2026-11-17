@@ -1,26 +1,24 @@
 package com.unpri.charactermanager;
 
-import com.unpri.charactermanager.model.CharacterManager;
 import com.unpri.charactermanager.model.Character;
 import com.unpri.charactermanager.model.CharacterType;
 import com.unpri.charactermanager.view.MainWindow;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            // 1. Inisialisasi CharacterManager
-            CharacterManager manager = new CharacterManager();
-            
-            // 2. Tambahkan data karakter beserta atribut lengkapnya
-            manager.addCharacter(new Character("Arthur", CharacterType.WARRIOR, 10, 50));
-            manager.addCharacter(new Character("Gandalf", CharacterType.MAGE, 12, 100));
-            manager.addCharacter(new Character("Robin", CharacterType.ARCHER, 8, 40));
-            manager.addCharacter(new Character("Lancelot", CharacterType.WARRIOR, 15, 60));
-            manager.addCharacter(new Character("Merlin", CharacterType.MAGE, 11, 90));
+        SwingUtilities.invokeLater(() -> {
+            List<Character> characterList = new ArrayList<>();
+            characterList.add(new Character("Arthur", CharacterType.WARRIOR, 6, 50));
+            characterList.add(new Character("Merlin", CharacterType.MAGE, 3, 50));
+            characterList.add(new Character("Legolas", CharacterType.ARCHER, 7, 50));
+            characterList.add(new Character("Ezio", CharacterType.ROGUE, 1, 50));
+            characterList.add(new Character("Gandalf", CharacterType.MAGE, 5, 50));
+            characterList.add(new Character("Lancelot", CharacterType.WARRIOR, 2, 50));
 
-            // 3. Tampilkan Jendela Utama GUI Swing
-            MainWindow window = new MainWindow(manager);
+            MainWindow window = new MainWindow(characterList);
             window.setVisible(true);
         });
-    }
-}
+}   }
