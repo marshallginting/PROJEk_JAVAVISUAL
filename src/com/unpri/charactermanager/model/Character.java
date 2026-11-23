@@ -10,20 +10,40 @@ public class Character {
     private int attack;
     private int mana;
 
+    // Konstruktor 1: Default level 1, mana 50
     public Character(String name, CharacterType type) {
-        this.name = name;
-        this.type = type;
-        this.level = 1;
-        calculateStats();
-        this.mana = 50;
+        this(name, type, 1, 50);
     }
 
+    // Konstruktor 2: Digunakan oleh CharacterFormPanel (nama, role/type, level)
+    public Character(String name, CharacterType type, int level) {
+        this(name, type, level, 50);
+    }
+
+    // Konstruktor 3: Utama dengan validasi penuh
     public Character(String name, CharacterType type, int level, int mana) {
-        this.name = name;
+        validateInvariants(name, type, level);
+        this.name = name.trim();
         this.type = type;
         this.level = level;
         calculateStats();
         setMana(mana);
+    }
+
+    private void validateInvariants(String name, CharacterType type, int level) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nama karakter tidak boleh kosong.");
+        }
+        if (type == null) {
+            throw new IllegalArgumentException("Role karakter tidak boleh null.");
+        }
+        if (level < 1 || level > 99) {
+            throw new IllegalArgumentException("Level karakter harus berada di antara 1 sampai 99.");
+        }
+        // Mini-Challenge Bagian B: Aturan khusus MAGE di lapisan Model
+        if (type == CharacterType.MAGE && level > 60) {
+            throw new IllegalArgumentException("Karakter dengan role MAGE tidak boleh memiliki level di atas 60.");
+        }
     }
 
     private void calculateStats() {
@@ -44,29 +64,66 @@ public class Character {
                 this.hitPoints = 80 + (this.level - 1) * 12;
                 this.attack = 22 + (this.level - 1) * 7;
                 break;
+            default:
+                this.hitPoints = 80 + (this.level - 1) * 12;
+                this.attack = 15 + (this.level - 1) * 5;
+                break;
         }
     }
 
-    // Getter & Setter
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    // Getter & Setter dengan penjagaan invarian
+    public String getName() {
+        return name;
+    }
 
-    public CharacterType getType() { return type; }
-    public void setType(CharacterType type) { this.type = type; }
+    public void setName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nama karakter tidak boleh kosong.");
+        }
+        this.name = name.trim();
+    }
 
-    public int getLevel() { return level; }
+    public CharacterType getType() {
+        return type;
+    }
+
+    // Alias getter agar kompatibel jika dipanggil sebagai getRole()
+    public CharacterType getRole() {
+        return type;
+    }
+
+    public void setType(CharacterType type) {
+        validateInvariants(this.name, type, this.level);
+        this.type = type;
+        calculateStats();
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     public void setLevel(int level) {
-        if (level > 0) {
-            this.level = level;
-            calculateStats();
-        }
+        validateInvariants(this.name, this.type, level);
+        this.level = level;
+        calculateStats();
     }
 
-    public int getHitPoints() { return hitPoints; }
-    public int getAttack() { return attack; }
-    public int getMana() { return mana; }
+    public int getHitPoints() {
+        return hitPoints;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
+    public int getMana() {
+        return mana;
+    }
+
     public void setMana(int mana) {
-        if (mana < 0) throw new IllegalArgumentException("Mana tidak boleh negatif!");
+        if (mana < 0) {
+            throw new IllegalArgumentException("Mana tidak boleh negatif!");
+        }
         this.mana = mana;
     }
 
@@ -74,18 +131,19 @@ public class Character {
         return this.hitPoints > 0;
     }
 
-    // Override equals() berdasarkan Nama (Case-insensitive atau standar)
+    // Override equals() & hashCode() berdasarkan Nama (Case-insensitive)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Character character = (Character) o;
-        return Objects.equals(name, character.name);
+        return name != null && character.name != null
+                && name.equalsIgnoreCase(character.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name == null ? null : name.toLowerCase());
     }
 
     @Override

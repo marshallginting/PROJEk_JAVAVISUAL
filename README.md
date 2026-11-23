@@ -9,3 +9,6 @@ https://docs.google.com/document/d/1ZjEHjU6LUV7rh4px6F51RVzVpasNh9WzlHW91DLc22U/
 ![alt text](StrukturAp13.png)
 https://docs.google.com/document/d/1B_sxi-n2EpJjqVgkhjaDPZnWCcFYM5pVbKEm8azNgeg/edit?usp=sharing
 ![alt text](HASILTP12.png)
+![alt text](image.png)
+https://docs.google.com/document/d/1-Cxjof6U3cJldYBQD8Fq-nSYDRRNbP7SAhQsR3jsni0/edit?usp=sharing
+![alt text](image.png)

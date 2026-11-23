@@ -1,6 +1,7 @@
 package com.unpri.charactermanager.view;
 
 import com.unpri.charactermanager.model.Character;
+import com.unpri.charactermanager.model.CharacterManager;
 import com.unpri.charactermanager.model.CharacterType;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -17,6 +18,7 @@ import javax.swing.JScrollPane;
 
 public class MainWindow extends JFrame {
 
+    private final CharacterManager manager;
     private final JPanel cardGridPanel;
     private final JLabel statusLeftLabel;
     private final JLabel totalCharValueLabel;
@@ -25,7 +27,13 @@ public class MainWindow extends JFrame {
     private final JLabel totalRoleValueLabel;
 
     public MainWindow() {
-        super("Character Manager — MainWindow v0.5");
+        this(new CharacterManager());
+    }
+
+    public MainWindow(CharacterManager manager) {
+        super("Character Manager — MainWindow v0.6");
+        this.manager = manager;
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(AppTheme.PADDING_MD, AppTheme.PADDING_MD));
         getContentPane().setBackground(AppTheme.BG_WINDOW);
@@ -42,14 +50,24 @@ public class MainWindow extends JFrame {
         northSection.add(createStatsPanel(), BorderLayout.CENTER);
         add(northSection, BorderLayout.NORTH);
 
-        // 2. CENTER: Daftar Kartu Berscroll (GridLayout di NORTH wrapper -> JScrollPane)
+        // 2. WEST: Form Input Karakter Baru (Bagian A)
+        JPanel westWrapper = new JPanel(new BorderLayout());
+        westWrapper.setBackground(AppTheme.BG_WINDOW);
+        westWrapper.setBorder(BorderFactory.createEmptyBorder(
+            AppTheme.PADDING_SM, AppTheme.PADDING_MD,
+            AppTheme.PADDING_SM, 0
+        ));
+        westWrapper.add(new CharacterFormPanel(this.manager, this::refreshList), BorderLayout.NORTH);
+        add(westWrapper, BorderLayout.WEST);
+
+        // 3. CENTER: Daftar Kartu Berscroll (GridLayout di NORTH wrapper -> JScrollPane)
         cardGridPanel = new JPanel(new GridLayout(0, 2, AppTheme.CARD_GRID_GAP, AppTheme.CARD_GRID_GAP));
         cardGridPanel.setBackground(AppTheme.BG_WINDOW);
 
         JPanel cardWrapperPanel = new JPanel(new BorderLayout());
         cardWrapperPanel.setBackground(AppTheme.BG_WINDOW);
         cardWrapperPanel.setBorder(BorderFactory.createEmptyBorder(
-            AppTheme.PADDING_SM, AppTheme.PADDING_MD,
+            AppTheme.PADDING_SM, AppTheme.PADDING_SM,
             AppTheme.PADDING_SM, AppTheme.PADDING_SM
         ));
         cardWrapperPanel.add(cardGridPanel, BorderLayout.NORTH);
@@ -60,12 +78,15 @@ public class MainWindow extends JFrame {
         scroll.getVerticalScrollBar().setUnitIncrement(AppTheme.SCROLL_UNIT_INCREMENT);
         add(scroll, BorderLayout.CENTER);
 
-        // 3. EAST: Legenda Role dengan BoxLayout Y_AXIS, strut, dan glue
+        // 4. EAST: Legenda Role dengan BoxLayout Y_AXIS, strut, dan glue
         add(createLegendPanel(), BorderLayout.EAST);
 
-        // 4. SOUTH: Bar Status (Teks kiri & "v0.5" di kanan)
+        // 5. SOUTH: Bar Status (Teks kiri & "v0.6" di kanan)
         statusLeftLabel = new JLabel("Siap memuat data karakter...");
         add(createStatusBarPanel(), BorderLayout.SOUTH);
+
+        // Muat data awal jika manager sudah terisi
+        refreshList();
 
         pack();
         setLocationRelativeTo(null);
@@ -205,13 +226,17 @@ public class MainWindow extends JFrame {
         statusLeftLabel.setFont(AppTheme.FONT_STATUS);
         statusLeftLabel.setForeground(AppTheme.TEXT_PRIMARY);
 
-        JLabel versionLabel = new JLabel("v0.5");
+        JLabel versionLabel = new JLabel("v0.6");
         versionLabel.setFont(AppTheme.FONT_STATUS);
         versionLabel.setForeground(AppTheme.TEXT_SECONDARY);
 
         statusBar.add(statusLeftLabel, BorderLayout.WEST);
         statusBar.add(versionLabel, BorderLayout.EAST);
         return statusBar;
+    }
+
+    public final void refreshList() {
+        setCharacters(manager.getAllCharacters());
     }
 
     public void setCharacters(List<Character> characters) {

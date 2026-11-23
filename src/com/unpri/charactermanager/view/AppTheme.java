@@ -4,6 +4,8 @@ import com.unpri.charactermanager.model.CharacterType;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
 
 public final class AppTheme {
 
@@ -12,7 +14,9 @@ public final class AppTheme {
 
     // Warna Latar & Permukaan
     public static final Color BG_WINDOW = new Color(241, 245, 249);
+    public static final Color BG_MAIN = BG_WINDOW; // Alias untuk CharacterFormPanel
     public static final Color BG_SURFACE = Color.WHITE;
+    public static final Color BG_CARD = BG_SURFACE;
     public static final Color BG_HEADER = new Color(30, 41, 59);
     public static final Color BG_STATS_BOX = new Color(248, 250, 252);
     public static final Color BG_STATUS_BAR = new Color(226, 232, 240);
@@ -23,6 +27,24 @@ public final class AppTheme {
     public static final Color TEXT_ON_HEADER = Color.WHITE;
     public static final Color TEXT_HEADER_MUTED = new Color(203, 213, 225);
     public static final Color BORDER_DEFAULT = new Color(203, 213, 225);
+
+    // Warna Status & Aksi Form (Validasi Bagian A)
+    public static final Color ACCENT_PRIMARY = new Color(37, 99, 235);
+    public static final Color ERROR_COLOR = new Color(220, 38, 38);
+    public static final Color SUCCESS_COLOR = new Color(22, 163, 74);
+
+    // Border Komponen
+    public static final Border FORM_BORDER = BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(BORDER_DEFAULT, 1),
+            BorderFactory.createEmptyBorder(12, 16, 12, 16)
+    );
+
+    public static final Border CARD_BORDER = BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(BORDER_DEFAULT, 1),
+            BorderFactory.createEmptyBorder(10, 12, 10, 12)
+    );
+
+    public static final Border ERROR_BORDER = BorderFactory.createLineBorder(ERROR_COLOR, 2);
 
     // Palet Warna Role (otomatis dipetakan ke CharacterType.values())
     private static final Color[] ROLE_COLORS = {
@@ -42,6 +64,11 @@ public final class AppTheme {
     public static final Font FONT_BODY = new Font("SansSerif", Font.PLAIN, 12);
     public static final Font FONT_STAT_VALUE = new Font("SansSerif", Font.BOLD, 15);
     public static final Font FONT_STATUS = new Font("Monospaced", Font.PLAIN, 12);
+
+    // Alias Tipografi untuk Form
+    public static final Font FONT_TITLE = FONT_CARD_NAME;
+    public static final Font FONT_SUBTITLE = FONT_SECTION_TITLE;
+    public static final Font FONT_SMALL = FONT_BODY;
 
     // Dimensi & Jarak
     public static final Dimension SCROLL_PREFERRED_SIZE = new Dimension(580, 400);
